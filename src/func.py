@@ -1,5 +1,5 @@
 ##########################################
-# Project: Let chatbot say hello world!
+# Project: Methods for Rikka Bot
 # Author: jolon
 ##########################################
 
@@ -24,49 +24,40 @@ def detect_negative_sentiment(text, sentiment_analysis_pipeline):
   score = result[0]["score"]
   return sentiment , score
 
+# ファイル読み込み
+def load_response(path):
+  response = []
+  with open(path) as f:
+    for line in f:
+       response.append(line.rstrip('\n'))
+  return response
+
 # 応答ルール
 def comfort_bot(input_text, sent_analysis_model):
   tokens = tokenizer.tokenize(input_text)
+
+  # メッセージと顔文字の読み込み
+  message_for_broccoli = load_response('response/messages/for_broccoli.txt')
+  kaomoji_for_broccoli = load_response('response/kaomoji/for_broccoli.txt')
+  message_for_yogurt = load_response('response/messages/for_yogurt.txt')
+  kaomoji_for_yogurt = load_response('response/kaomoji/for_yogurt.txt')
+  message_for_positive = load_response('response/messages/for_positive.txt')
+  kaomoji_for_positive = load_response('response/kaomoji/for_positive.txt')
+  message_for_negative = load_response('response/messages/for_negative.txt')
+  kaomoji_for_negative = load_response('response/kaomoji/for_negative.txt')
   
   # トークンごとにルールをチェック
   for token in tokens:
-    if token.surface in "ブロッコリー": # 定義した挨拶用語が含まれる場合は同じ言葉を返すルール
-      return "うわ、そんなもん持って来んなぁ！！！"
+    if token.surface in "ブロッコリー":
+      return random.choice(message_for_broccoli) + random.choice(kaomoji_for_broccoli)
     elif token.surface in "ヨーグルト":
-      return "え！ヨーグルトくれるの！？やった〜"
+      return random.choice(message_for_yogurt) + random.choice(kaomoji_for_yogurt)
   
   sentiment, score = detect_negative_sentiment(input_text, sent_analysis_model)
   if sentiment == "negative":
-    return random.choice(encouragement_messages1)
+    return random.choice(message_for_negative) + random.choice(kaomoji_for_negative)
   elif sentiment == "positive":
-    return random.choice(encouragement_messages2)
+    return random.choice(message_for_positive) + random.choice(kaomoji_for_positive)
   else:
     return "ん、なんて？"
-
-sentiment_analysis_model_name = "jarvisx17/japanese-sentiment-analysis"
-sentiment_analysis_model = load_sentiment_analysis_model(sentiment_analysis_model_name)
-
-encouragement_messages1 = [
-    "どしたん？話、聞こか？",
-    "どしたん？話、聞くよ？",
-    "どしたん？トド岩、行っとく？",
-    "どしたん？ヨーグルト、食べとく？"
-]
-
-encouragement_messages2 = [
-    "いいね！",
-    "GJ! ^^b",
-    "頑張ってるね〜",
-    "さっすが〜！知らなかった〜！すごーい！センスいい！そうなんだ〜！"
-]
-
-# チャットボットの利用
-while True:
-    user_input = input("ユーザー: ")
-    if user_input.lower() == "終了":
-        print("またね〜！ *˙︶˙*)ﾉ\n")
-        break
-
-    response = comfort_bot(user_input, sentiment_analysis_model)
-    print(f"六花: {response}\n")
 
