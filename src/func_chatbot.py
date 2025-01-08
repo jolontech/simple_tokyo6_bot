@@ -17,12 +17,14 @@ def load_sentiment_analysis_model(model_name):
   sentiment_analysis_pipeline = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
   return sentiment_analysis_pipeline
 
+
 # 感情分析
 def detect_negative_sentiment(text, sentiment_analysis_pipeline):
   result = sentiment_analysis_pipeline(text)
   sentiment = result[0]["label"]
   score = result[0]["score"]
   return sentiment , score
+
 
 # ファイル読み込み
 def load_response(path):
@@ -32,7 +34,19 @@ def load_response(path):
        response.append(line.rstrip('\n'))
   return response
 
-# 応答ルール
+
+# 終了メッセージの生成
+def say_byebye():
+  # メッセージと顔文字の読み込み
+  message_for_byebye = load_response('response/messages/for_byebye.txt')
+  kaomoji_for_byebye = load_response('response/kaomoji/for_byebye.txt')
+
+  text = random.choice(message_for_byebye)
+  kaomoji = random.choice(kaomoji_for_byebye)
+  return {"text": text, "kaomoji": kaomoji}
+
+
+# 感情推定&応答の生成
 def comfort_bot(input_text, sent_analysis_model):
   tokens = tokenizer.tokenize(input_text)
 
@@ -49,15 +63,23 @@ def comfort_bot(input_text, sent_analysis_model):
   # トークンごとにルールをチェック
   for token in tokens:
     if token.surface in "ブロッコリー":
-      return random.choice(message_for_broccoli) + random.choice(kaomoji_for_broccoli)
+      text = random.choice(message_for_broccoli)
+      kaomoji = random.choice(kaomoji_for_broccoli)
+      return {"text": text, "kaomoji": kaomoji}
     elif token.surface in "ヨーグルト":
-      return random.choice(message_for_yogurt) + random.choice(kaomoji_for_yogurt)
+      text = random.choice(message_for_yogurt)
+      kaomoji = random.choice(kaomoji_for_yogurt)
+      return {"text": text, "kaomoji": kaomoji}
   
   sentiment, score = detect_negative_sentiment(input_text, sent_analysis_model)
   if sentiment == "negative":
-    return random.choice(message_for_negative) + random.choice(kaomoji_for_negative)
+    text = random.choice(message_for_negative)
+    kaomoji = random.choice(kaomoji_for_negative)
+    return {"text": text, "kaomoji": kaomoji}
   elif sentiment == "positive":
-    return random.choice(message_for_positive) + random.choice(kaomoji_for_positive)
+    text = random.choice(message_for_positive)
+    kaomoji = random.choice(kaomoji_for_positive)
+    return {"text": text, "kaomoji": kaomoji}
   else:
-    return "ん、なんて？"
+    return {"text": "ん、なんて？", "kaomoji": "(?_?)"}
 
