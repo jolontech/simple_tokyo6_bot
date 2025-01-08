@@ -3,6 +3,7 @@
 
 # Original
 tmp/
+wav/
 
 # General
 .DS_Store
