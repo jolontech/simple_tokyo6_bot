@@ -26,21 +26,31 @@ if __name__ == "__main__":
     
     # 終了メッセージ
     if user_input.lower() in byebye:
+      # メッセージ生成
       response_text_kaomoji = say_byebye()
       response = response_text_kaomoji['text'] + response_text_kaomoji['kaomoji']
-      print(f"六花: {response}\n")
       
+      # ボイス生成
       if with_voice:
         generate_voice(query=response_text_kaomoji['text'], out_file='wav/response.wav')
+
+      # メッセージ&ボイス出力
+      print(f"六花: {response}\n")
+      if with_voice:
         play_voice(input='wav/response.wav')
         break
     
     # 応答メッセージ
+    # メッセージ生成
     response_text_kaomoji = comfort_bot(user_input, sentiment_analysis_model)
     response = response_text_kaomoji['text'] + response_text_kaomoji['kaomoji']
-    print(f"六花: {response}\n")
-    
+
+     # ボイス生成
     if with_voice:
       generate_voice(query=response_text_kaomoji['text'], out_file='wav/response.wav')
+
+    # メッセージ&ボイス出力
+    print(f"六花: {response}\n")    
+    if with_voice:
       play_voice(input='wav/response.wav')
       
