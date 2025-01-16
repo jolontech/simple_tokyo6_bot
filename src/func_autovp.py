@@ -13,7 +13,7 @@ from pydub.playback import play
 df_out_file = 'test.wav'
 df_vp_path = '/Applications/voicepeak.app/Contents/MacOS/voicepeak'
 df_narrator = 'Koharu Rikka'
-df_emotion = 'hightension=100'
+df_emotion = 'hightension=70'
 
 # VoicePeakでボイスのwavデータを生成
 def generate_voice(query, out_file=df_out_file, narrator=df_narrator, vp_path=df_vp_path, emotion=df_emotion):
