@@ -51,6 +51,8 @@ def comfort_bot(input_text, sent_analysis_model):
   tokens = tokenizer.tokenize(input_text)
 
   # メッセージと顔文字の読み込み
+  message_for_hello = load_response('response/messages/for_hello.txt')
+  kaomoji_for_hello = load_response('response/kaomoji/for_hello.txt')
   message_for_broccoli = load_response('response/messages/for_broccoli.txt')
   kaomoji_for_broccoli = load_response('response/kaomoji/for_broccoli.txt')
   message_for_yogurt = load_response('response/messages/for_yogurt.txt')
@@ -59,7 +61,8 @@ def comfort_bot(input_text, sent_analysis_model):
   kaomoji_for_positive = load_response('response/kaomoji/for_positive.txt')
   message_for_negative = load_response('response/messages/for_negative.txt')
   kaomoji_for_negative = load_response('response/kaomoji/for_negative.txt')
-  
+  hello = load_response('response/hello/judge_hello.txt')
+
   # トークンごとにルールをチェック
   for token in tokens:
     if token.surface in "ブロッコリー":
@@ -69,6 +72,10 @@ def comfort_bot(input_text, sent_analysis_model):
     elif token.surface in "ヨーグルト":
       text = random.choice(message_for_yogurt)
       kaomoji = random.choice(kaomoji_for_yogurt)
+      return {"text": text, "kaomoji": kaomoji}
+    elif token.surface in hello:
+      text = random.choice(message_for_hello)
+      kaomoji = random.choice(kaomoji_for_hello)
       return {"text": text, "kaomoji": kaomoji}
   
   sentiment, score = detect_negative_sentiment(input_text, sent_analysis_model)
