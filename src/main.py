@@ -35,7 +35,7 @@ if __name__ == "__main__":
         generate_voice(query=response_text_kaomoji['text'], out_file='wav/response.wav')
 
       # メッセージ&ボイス出力
-      print(f"六花: {response}\n")
+      print(f"\033[35m六花: {response}\033[0m\n")
       if with_voice:
         play_voice(input='wav/response.wav')
         break
@@ -50,7 +50,7 @@ if __name__ == "__main__":
       generate_voice(query=response_text_kaomoji['text'], out_file='wav/response.wav')
 
     # メッセージ&ボイス出力
-    print(f"六花: {response}\n")    
+    print(f"\033[35m六花: {response}\033[0m\n")    
     if with_voice:
       play_voice(input='wav/response.wav')
       
