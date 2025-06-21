@@ -3,18 +3,24 @@
 # Author: jolon
 ##########################################
 
+# Import moudules
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, pipeline
 import random
+import sys
 from janome.tokenizer import Tokenizer
 
 # Janomeのインスタンスを作成
 tokenizer = Tokenizer()
 
+
 # 事前学習済みモデルの読み込み
 def load_sentiment_analysis_model(model_name):
+  
+  # モデルのロード
   model = AutoModelForSequenceClassification.from_pretrained(model_name)
   tokenizer = AutoTokenizer.from_pretrained(model_name)
   sentiment_analysis_pipeline = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
+  
   return sentiment_analysis_pipeline
 
 
@@ -23,7 +29,8 @@ def detect_negative_sentiment(text, sentiment_analysis_pipeline):
   result = sentiment_analysis_pipeline(text)
   sentiment = result[0]["label"]
   score = result[0]["score"]
-  return sentiment , score
+  
+  return sentiment, score
 
 
 # ファイル読み込み
@@ -32,61 +39,195 @@ def load_response(path):
   with open(path) as f:
     for line in f:
        response.append(line.rstrip('\n'))
+       
   return response
 
 
 # 終了メッセージの生成
-def say_byebye():
+def say_byebye(narrator):
   # メッセージと顔文字の読み込み
-  message_for_byebye = load_response('response/messages/for_byebye.txt')
-  kaomoji_for_byebye = load_response('response/kaomoji/for_byebye.txt')
+  message_for_byebye = load_response('response/' + narrator + '/messages/for_byebye.txt')
+  kaomoji_for_byebye = load_response('response/' + narrator + '/kaomoji/for_byebye.txt')
 
+  # 応答メッセージ生成
   text = random.choice(message_for_byebye)
   kaomoji = random.choice(kaomoji_for_byebye)
+  
   return {"text": text, "kaomoji": kaomoji}
 
 
-# 感情推定&応答の生成
-def comfort_bot(input_text, sent_analysis_model):
-  tokens = tokenizer.tokenize(input_text)
+# メッセージと顔文字の辞書作成
+def get_message_dict(narrator="rikka"):
+  if narrator == "rikka":
+    message_for_hello = load_response('response/rikka/messages/for_hello.txt')
+    kaomoji_for_hello = load_response('response/rikka/kaomoji/for_hello.txt')
+    message_for_broccoli = load_response('response/rikka/messages/for_broccoli.txt')
+    kaomoji_for_broccoli = load_response('response/rikka/kaomoji/for_broccoli.txt')
+    message_for_yogurt = load_response('response/rikka/messages/for_yogurt.txt')
+    kaomoji_for_yogurt = load_response('response/rikka/kaomoji/for_yogurt.txt')
+    message_for_positive = load_response('response/rikka/messages/for_positive.txt')
+    kaomoji_for_positive = load_response('response/rikka/kaomoji/for_positive.txt')
+    message_for_negative = load_response('response/rikka/messages/for_negative.txt')
+    kaomoji_for_negative = load_response('response/rikka/kaomoji/for_negative.txt')
+    message_for_byebye = load_response('response/rikka/messages/for_byebye.txt')
+    kaomoji_for_byebye = load_response('response/rikka/kaomoji/for_byebye.txt')
+    message_dict = {'hello': message_for_hello, 'positive': message_for_positive,
+                    'negative': message_for_negative, 'yogurt': message_for_yogurt,
+                    'broccoli': message_for_broccoli, 'byebye': message_for_byebye}
+    kaomoji_dict = {'hello': kaomoji_for_hello, 'positive': kaomoji_for_positive,
+                    'negative': kaomoji_for_negative, 'yogurt': kaomoji_for_yogurt,
+                    'broccoli': kaomoji_for_broccoli, 'byebye': message_for_byebye}
 
-  # メッセージと顔文字の読み込み
-  message_for_hello = load_response('response/messages/for_hello.txt')
-  kaomoji_for_hello = load_response('response/kaomoji/for_hello.txt')
-  message_for_broccoli = load_response('response/messages/for_broccoli.txt')
-  kaomoji_for_broccoli = load_response('response/kaomoji/for_broccoli.txt')
-  message_for_yogurt = load_response('response/messages/for_yogurt.txt')
-  kaomoji_for_yogurt = load_response('response/kaomoji/for_yogurt.txt')
-  message_for_positive = load_response('response/messages/for_positive.txt')
-  kaomoji_for_positive = load_response('response/kaomoji/for_positive.txt')
-  message_for_negative = load_response('response/messages/for_negative.txt')
-  kaomoji_for_negative = load_response('response/kaomoji/for_negative.txt')
-  hello = load_response('response/hello/judge_hello.txt')
+  elif narrator == "karin":
+    message_for_hello = load_response('response/karin/messages/for_hello.txt')
+    kaomoji_for_hello = load_response('response/karin/kaomoji/for_hello.txt')
+    message_for_broccoli = load_response('response/karin/messages/for_broccoli.txt')
+    kaomoji_for_broccoli = load_response('response/karin/kaomoji/for_broccoli.txt')
+    message_for_yogurt = load_response('response/karin/messages/for_yogurt.txt')
+    kaomoji_for_yogurt = load_response('response/karin/kaomoji/for_yogurt.txt')
+    message_for_positive = load_response('response/karin/messages/for_positive.txt')
+    kaomoji_for_positive = load_response('response/karin/kaomoji/for_positive.txt')
+    message_for_negative = load_response('response/karin/messages/for_negative.txt')
+    kaomoji_for_negative = load_response('response/karin/kaomoji/for_negative.txt')
+    message_for_byebye = load_response('response/karin/messages/for_byebye.txt')
+    kaomoji_for_byebye = load_response('response/karin/kaomoji/for_byebye.txt')
+    message_dict = {'hello': message_for_hello, 'positive': message_for_positive,
+                    'negative': message_for_negative, 'yogurt': message_for_yogurt,
+                    'broccoli': message_for_broccoli, 'byebye': message_for_byebye}
+    kaomoji_dict = {'hello': kaomoji_for_hello, 'positive': kaomoji_for_positive,
+                    'negative': kaomoji_for_negative, 'yogurt': kaomoji_for_yogurt,
+                    'broccoli': kaomoji_for_broccoli, 'byebye': message_for_byebye}
+
+  elif narrator == "chifuyu":
+    message_for_hello = load_response('response/chifuyu/messages/for_hello.txt')
+    kaomoji_for_hello = load_response('response/chifuyu/kaomoji/for_hello.txt')
+    message_for_broccoli = load_response('response/chifuyu/messages/for_broccoli.txt')
+    kaomoji_for_broccoli = load_response('response/chifuyu/kaomoji/for_broccoli.txt')
+    message_for_yogurt = load_response('response/chifuyu/messages/for_yogurt.txt')
+    kaomoji_for_yogurt = load_response('response/chifuyu/kaomoji/for_yogurt.txt')
+    message_for_positive = load_response('response/chifuyu/messages/for_positive.txt')
+    kaomoji_for_positive = load_response('response/chifuyu/kaomoji/for_positive.txt')
+    message_for_negative = load_response('response/chifuyu/messages/for_negative.txt')
+    kaomoji_for_negative = load_response('response/chifuyu/kaomoji/for_negative.txt')
+    message_for_byebye = load_response('response/chifuyu/messages/for_byebye.txt')
+    kaomoji_for_byebye = load_response('response/chifuyu/kaomoji/for_byebye.txt')
+    message_dict = {'hello': message_for_hello, 'positive': message_for_positive,
+                    'negative': message_for_negative, 'yogurt': message_for_yogurt,
+                    'broccoli': message_for_broccoli, 'byebye': message_for_byebye}
+    kaomoji_dict = {'hello': kaomoji_for_hello, 'positive': kaomoji_for_positive,
+                    'negative': kaomoji_for_negative, 'yogurt': kaomoji_for_yogurt,
+                    'broccoli': kaomoji_for_broccoli, 'byebye': message_for_byebye}
+
+  else:
+    sys.exit("Error: Inproper args of narrator in get_message_dict function")
+    
+  return message_dict, kaomoji_dict
+  
+
+# 感情推定 & 応答の生成 六花
+def comfort_bot_rikka(input_text, sent_analysis_model, message_dict, kaomoji_dict):
+  tokens = tokenizer.tokenize(input_text)
 
   # トークンごとにルールをチェック
   for token in tokens:
-    if token.surface in "ブロッコリー":
-      text = random.choice(message_for_broccoli)
-      kaomoji = random.choice(kaomoji_for_broccoli)
+    if token.surface in "おはよう":
+      text = random.choice(message_dict['hello'])
+      kaomoji = random.choice(kaomoji_dict['hello'])
       return {"text": text, "kaomoji": kaomoji}
+    
+    elif token.surface in "ブロッコリー":
+      text = random.choice(message_dict['broccoli'])
+      kaomoji = random.choice(kaomoji_dict['broccoli'])
+      return {"text": text, "kaomoji": kaomoji}
+    
     elif token.surface in "ヨーグルト":
-      text = random.choice(message_for_yogurt)
-      kaomoji = random.choice(kaomoji_for_yogurt)
+      text = random.choice(message_dict['yogurt'])
+      kaomoji = random.choice(kaomoji_dict['yogurt'])
       return {"text": text, "kaomoji": kaomoji}
-    elif token.surface in hello:
-      text = random.choice(message_for_hello)
-      kaomoji = random.choice(kaomoji_for_hello)
+    
+  sentiment, score = detect_negative_sentiment(input_text, sent_analysis_model)
+  if sentiment == "negative":
+    text = random.choice(message_dict['negative'])
+    kaomoji = random.choice(kaomoji_dict['negative'])
+    return {"text": text, "kaomoji": kaomoji}
+  
+  elif sentiment == "positive":
+    text = random.choice(message_dict['positive'])
+    kaomoji = random.choice(kaomoji_dict['positive'])
+    return {"text": text, "kaomoji": kaomoji}
+  
+  else:
+    return {"text": "ん、なんて？", "kaomoji": "(?_?)"}
+
+
+# 感情推定 & 応答の生成 花梨
+def comfort_bot_karin(input_text, sent_analysis_model, message_dict, kaomoji_dict):
+  tokens = tokenizer.tokenize(input_text)
+  
+  # トークンごとにルールをチェック
+  for token in tokens:
+    if token.surface in "おはよう":
+      text = random.choice(message_dict['hello'])
+      kaomoji = random.choice(kaomoji_dict['hello'])
+      return {"text": text, "kaomoji": kaomoji}
+    
+    elif token.surface in "ブロッコリー":
+      text = random.choice(message_dict['broccoli'])
+      kaomoji = random.choice(kaomoji_dict['broccoli'])
+      return {"text": text, "kaomoji": kaomoji}
+    
+    elif token.surface in "ヨーグルト":
+      text = random.choice(message_dict['yogurt'])
+      kaomoji = random.choice(kaomoji_dict['yogurt'])
       return {"text": text, "kaomoji": kaomoji}
   
   sentiment, score = detect_negative_sentiment(input_text, sent_analysis_model)
   if sentiment == "negative":
-    text = random.choice(message_for_negative)
-    kaomoji = random.choice(kaomoji_for_negative)
+    text = random.choice(message_dict['negative'])
+    kaomoji = random.choice(kaomoji_dict['negative'])
     return {"text": text, "kaomoji": kaomoji}
+  
   elif sentiment == "positive":
-    text = random.choice(message_for_positive)
-    kaomoji = random.choice(kaomoji_for_positive)
+    text = random.choice(message_dict['positive'])
+    kaomoji = random.choice(kaomoji_dict['positive'])
     return {"text": text, "kaomoji": kaomoji}
+  
   else:
-    return {"text": "ん、なんて？", "kaomoji": "(?_?)"}
+    return {"text": "え、なんて？", "kaomoji": "(?_?)"}
+
+  
+# 感情推定 & 応答の生成 千冬
+def comfort_bot_chifuyu(input_text, sent_analysis_model, message_dict, kaomoji_dict):
+  tokens = tokenizer.tokenize(input_text)
+  
+  # トークンごとにルールをチェック
+  for token in tokens:
+    if token.surface in "おはよう":
+      text = random.choice(message_dict['hello'])
+      kaomoji = random.choice(kaomoji_dict['hello'])
+      return {"text": text, "kaomoji": kaomoji}
+    
+    elif token.surface in "ブロッコリー":
+      text = random.choice(message_dict['broccoli'])
+      kaomoji = random.choice(kaomoji_dict['broccoli'])
+      return {"text": text, "kaomoji": kaomoji}
+    
+    elif token.surface in "ヨーグルト":
+      text = random.choice(message_dict['yogurt'])
+      kaomoji = random.choice(kaomoji_dict['yogurt'])
+      return {"text": text, "kaomoji": kaomoji}
+    
+  sentiment, score = detect_negative_sentiment(input_text, sent_analysis_model)
+  if sentiment == "negative":
+    text = random.choice(message_dict['negative'])
+    kaomoji = random.choice(kaomoji_dict['negative'])
+    return {"text": text, "kaomoji": kaomoji}
+  
+  elif sentiment == "positive":
+    text = random.choice(message_dict['positive'])
+    kaomoji = random.choice(kaomoji_dict['positive'])
+    return {"text": text, "kaomoji": kaomoji}
+  
+  else:
+    return {"text": "え、なんて言いました？", "kaomoji": "(?_?)"}
 
