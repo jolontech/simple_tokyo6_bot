@@ -177,7 +177,7 @@ def comfort_bot_karin(input_text, sent_analysis_model, message_dict, kaomoji_dic
       return {"text": text, "kaomoji": kaomoji}
 
     # liked
-    elif token.surface in "フロマージュ":
+    elif token.surface in "フロマージュ" or token.surface in "ドゥーブル・フロマージュ":
       text = random.choice(message_dict['liked'])
       kaomoji = random.choice(kaomoji_dict['liked'])
       return {"text": text, "kaomoji": kaomoji}
