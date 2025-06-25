@@ -1,6 +1,7 @@
 ##########################################
-# Project: Methods for Rikka Bot
+# Project: Methods for chatbot with TOKYO6 characters
 # Author: jolon
+# Description: methods called from main
 ##########################################
 
 # Import moudules

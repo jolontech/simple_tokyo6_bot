@@ -1,5 +1,5 @@
 ##########################################
-# Project: Methods for generating and playing voice with VoicePeak
+# Project: Methods for generating and playing voice with VOICEPEAK
 # Author: jolon
 # Description: methods called from main
 ##########################################

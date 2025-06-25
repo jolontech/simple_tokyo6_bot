@@ -1,7 +1,7 @@
 #########################################
-# Project: Let Rikka Bot talk and encourage
+# Project: Simple chatbot with voice
 # Author: jolon
-# Usage: python main.py
+# Usage: python main.py --cfg [../confs/config_file]
 ##########################################
 
 from func_chatbot import *

@@ -5,6 +5,7 @@
 - python >=3.10.9
 - zsh
 - Python modules in requirements/requirements.txt
+- voicepeak >=1.2.1 (コンフィグファイルにvoicepeakのバイナリのパスを指定)
 
 ```sh
 % python -m venv ~/tokyo6_bot && source ~/tokyo6_bot/bin/activate
